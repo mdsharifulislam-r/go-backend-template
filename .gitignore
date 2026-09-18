@@ -1,0 +1,17 @@
+.idea/
+.vscode/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.*
+*.coverprofile
+bin/
+tmp/
+uploads/*
+!uploads/.gitkeep
+.env
+vendor/
