@@ -58,11 +58,7 @@ func (c *Controller) UpdateProfile(w http.ResponseWriter, r *http.Request) error
 		Image:   r.FormValue("image"),
 	}
 
-	files := middleware.GetUploadedFiles(r.Context())
-	imagePath := ""
-	if imgs := files["image"]; len(imgs) > 0 {
-		imagePath = imgs[0]
-	}
+	imagePath := middleware.GetSingleFilePath(r.Context(), "image")
 
 	user, err := c.service.UpdateProfile(claims.ID, payload, imagePath)
 	if err != nil {

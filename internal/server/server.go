@@ -17,20 +17,23 @@ import (
 	"github.com/mdsharifulislam-r/go-backend-template/internal/module/auth"
 	"github.com/mdsharifulislam-r/go-backend-template/internal/module/user"
 	"github.com/mdsharifulislam-r/go-backend-template/internal/response"
+	"github.com/mdsharifulislam-r/go-backend-template/internal/socket"
 	"gorm.io/gorm"
 )
 
 type Server struct {
-	cfg    *config.Config
-	db     *gorm.DB
-	router chi.Router
+	cfg       *config.Config
+	db        *gorm.DB
+	router    chi.Router
+	socketHub *socket.Hub
 }
 
 func New(cfg *config.Config, db *gorm.DB) *Server {
 	s := &Server{
-		cfg:    cfg,
-		db:     db,
-		router: chi.NewRouter(),
+		cfg:       cfg,
+		db:        db,
+		router:    chi.NewRouter(),
+		socketHub: socket.NewHub(),
 	}
 	s.registerRoutes()
 	return s
@@ -61,6 +64,8 @@ func (s *Server) registerRoutes() {
 
 	s.router.Get("/", apperrors.Handle(healthHandler))
 	s.router.Get("/health", apperrors.Handle(healthHandler))
+	s.router.HandleFunc("/socket", s.socketHub.Handle)
+	s.router.HandleFunc("/ws", s.socketHub.Handle)
 
 	s.router.Route("/api/v1", func(r chi.Router) {
 		user.RegisterRoutes(r, userCtl)

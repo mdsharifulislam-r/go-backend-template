@@ -82,6 +82,22 @@ func GetUploadedFiles(ctx context.Context) map[string][]string {
 	return files
 }
 
+func GetSingleFilePath(ctx context.Context, key string) string {
+	files := GetUploadedFiles(ctx)
+	if imgs := files[key]; len(imgs) > 0 {
+		return imgs[0]
+	}
+	return ""
+}
+
+func GetMultipleFilePaths(ctx context.Context, key string) []string {
+	files := GetUploadedFiles(ctx)
+	if imgs := files[key]; len(imgs) > 0 {
+		return imgs
+	}
+	return []string{}
+}
+
 func saveUpload(destDir string, header *multipart.FileHeader) (string, error) {
 	src, err := header.Open()
 	if err != nil {
